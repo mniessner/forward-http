@@ -7,6 +7,7 @@ module Http exposing
   , Body, emptyBody, jsonBody, stringBody, multipartBody, Part, stringPart
   , Expect, expectString, expectJson, expectStringResponse, Response
   , encodeUri, decodeUri, toTask
+  , responseToResult, rawRequest
   )
 
 {-| Create and send HTTP requests.
@@ -35,6 +36,9 @@ module Http exposing
 # Low-Level
 @docs encodeUri, decodeUri, toTask
 
+# For Effect Managers
+@docs rawRequest, responseToResult
+
 -}
 
 import Dict exposing (Dict)
@@ -57,6 +61,10 @@ import Time exposing (Time)
 -}
 type alias Request a =
   Http.Internal.Request a
+
+
+type alias RawRequest a =
+  Http.Internal.RawRequest a
 
 
 {-| Send a `Request`. We could get the text of “War and Peace” like this:
@@ -408,4 +416,18 @@ It works just like `decodeURIComponent` in JavaScript.
 decodeUri : String -> Maybe String
 decodeUri =
   Native.Http.decodeUri
+ 
 
+{-| Use this within effect managers that need to manipulate the raw request.
+-}
+rawRequest : Request a -> RawRequest a
+rawRequest (Http.Internal.Request rawRequest) =
+  rawRequest
+
+
+{-| Use this within effect managers that need to parse a response in more 
+than one way.
+-}
+responseToResult : Expect a -> (Response String -> Result String a)
+responseToResult expect =
+  Native.Http.responseToResult expect

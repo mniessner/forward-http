@@ -226,13 +226,25 @@ function multipart(parts)
 	return { ctor: 'FormDataBody', _0: formData };
 }
 
+
+// FORWARD SUPPORT
+
+function responseToResult(expect)
+{
+  return expect.responseToResult;
+}
+
+
+// Export
+
 return {
 	toTask: F2(toTask),
 	expectStringResponse: expectStringResponse,
 	mapExpect: F2(mapExpect),
 	multipart: multipart,
 	encodeUri: encodeUri,
-	decodeUri: decodeUri
+  decodeUri: decodeUri,
+  responseToResult: responseToResult
 };
 
 }();
